@@ -14,10 +14,9 @@ import { useSafeState } from 'ahooks';
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
-    fetchProducts: () => void;
 };
 
-export function AddProduct({ setOpen, open, fetchProducts }: Props) {
+export function AddProduct({ setOpen, open }: Props) {
     const [loading, setLoading] = useSafeState(false);
     const hookForm = useForm<TProductSchema>({
         resolver: zodResolver(ProductSchema),
