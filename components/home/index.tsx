@@ -4,63 +4,10 @@ import BuyerLayout from '@components/shared/common/layout';
 import ProductList from '@components/product/list';
 import { CustomButton } from '@components/shared/custom/custom-button';
 import { Plus } from 'lucide-react';
-import { AddProduct } from '@components/home/add-product';
 import { useSafeState } from 'ahooks';
 import { collection, getDocs } from '@firebase/firestore';
 import { db } from '../../firebaseConfig';
-
-const products = [
-    {
-        id: 1,
-        title: 'Chic Floral Midi Dress - Perfect for Spring!',
-        price: 350.0,
-        oldPrice: 400.0,
-        imageUrl: '/images/fake/dress.png',
-        postedDate: '3 days ago',
-        storeName: 'Sapphire Clothing',
-        location: 'Miami, Florida',
-    },
-    {
-        id: 2,
-        title: 'Nike Running Shoes - Like New!',
-        price: 350.0,
-        oldPrice: 400.0,
-        imageUrl: '/images/fake/shoes.png',
-        postedDate: '3 days ago',
-        storeName: 'Sapphire Clothing',
-        location: 'Miami, Florida',
-    },
-    {
-        id: 3,
-        title: 'Chic Floral Midi Dress - Perfect for Spring!',
-        price: 350.0,
-        oldPrice: 400.0,
-        imageUrl: '/images/fake/dress.png',
-        postedDate: '3 days ago',
-        storeName: 'Sapphire Clothing',
-        location: 'Miami, Florida',
-    },
-    {
-        id: 4,
-        title: 'Nike Running Shoes - Like New!',
-        price: 350.0,
-        oldPrice: 400.0,
-        imageUrl: '/images/fake/shoes.png',
-        postedDate: '3 days ago',
-        storeName: 'Sapphire Clothing',
-        location: 'Miami, Florida',
-    },
-    {
-        id: 5,
-        title: 'Nike Running Shoes - Like New!',
-        price: 350.0,
-        oldPrice: 400.0,
-        imageUrl: '/images/fake/shoes.png',
-        postedDate: '3 days ago',
-        storeName: 'Sapphire Clothing',
-        location: 'Miami, Florida',
-    },
-];
+import { AddProduct } from './add-product';
 
 const HomePageComponent = () => {
     const [open, setOpen] = useSafeState<boolean>(false);

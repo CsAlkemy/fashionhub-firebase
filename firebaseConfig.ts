@@ -1,14 +1,14 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from '@firebase/firestore';
-import { getStorage } from '@firebase/storage';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: 'AIzaSyCG8TCMUncs016YOulpVIAeyazDSKxBjUI',
-    authDomain: 'fashionhub-53814.firebaseapp.com',
-    projectId: 'fashionhub-53814',
-    storageBucket: 'fashionhub-53814.appspot.com',
-    messagingSenderId: '248360639764',
-    appId: '1:248360639764:web:7290c8d5a22bb34961f601',
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);

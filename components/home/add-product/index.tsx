@@ -7,18 +7,17 @@ import React from 'react';
 import CustomFileUploader from '@components/shared/custom/custom-file-uploader';
 import { ProductSchema, TProductSchema } from '@library/schemas/product';
 import { addDoc, collection } from '@firebase/firestore';
-import { db, storage } from '../../../firebaseConfig';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { db } from '../../../firebaseConfig';
 import customToast from '@components/shared/custom/custom-toast';
-import { v4 as uuidv4 } from 'uuid';
 import { useSafeState } from 'ahooks';
 
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
+    fetchProducts: () => void;
 };
 
-export function AddProduct({ setOpen, open }: Props) {
+export function AddProduct({ setOpen, open, fetchProducts }: Props) {
     const [loading, setLoading] = useSafeState(false);
     const hookForm = useForm<TProductSchema>({
         resolver: zodResolver(ProductSchema),
@@ -34,33 +33,12 @@ export function AddProduct({ setOpen, open }: Props) {
     });
     const onSubmit = async (data: TProductSchema) => {
         setLoading(true);
-
         try {
-            const files: File[] = data.productImages as unknown as File[];
-            const imageUrls = await Promise.all(
-                files.map(async (file: File) => {
-                    const storageRef = ref(storage, `products/${uuidv4()}-${file.name}`);
-                    const metadata = {
-                        contentType: 'image/jpeg',
-                    };
-
-                    try {
-                        // const base64String = await funcFileToBase64(file);
-                        // const blob = funcBase64StringToBlob(base64String);
-                        const snapshot = await uploadBytes(storageRef, file, metadata);
-                        const downloadURL = await getDownloadURL(snapshot.ref);
-                        return downloadURL;
-                    } catch (uploadError) {
-                        console.error('Upload error:', uploadError);
-                        throw uploadError;
-                    }
-                }),
-            );
             const productData = {
                 ...data,
-                productImages: imageUrls,
                 createdAt: new Date(),
             };
+
             await addDoc(collection(db, 'products'), productData);
             customToast({
                 title: 'Product added successfully',
@@ -95,7 +73,6 @@ export function AddProduct({ setOpen, open }: Props) {
                         <CustomInput hookForm={hookForm} required type="textarea" name="productDetails" placeholder="Product Details" />
                         <CustomInput hookForm={hookForm} required type="textarea" name="moreDetails" placeholder="More Details" />
                     </div>
-
                     <CustomFileUploader name="productImages" maxFiles={5} hookForm={hookForm} />
                     <div className="flex justify-end space-x-3">
                         <CustomButton type="button" variant="destructive" onClick={() => setOpen(false)}>

@@ -11,7 +11,7 @@ const BuyerLayout: React.FC<CommonLayoutProps> = ({ children, title }) => {
     return (
         <>
             <Head>
-                <title>{title ? `${title} - ${process.env.NEXT_PUBLIC_APP_NAME}` : ''}</title>
+                <title>{title ? `${title} - FashionHub` : ''}</title>
             </Head>
             <Header />
             <div className="">{children}</div>

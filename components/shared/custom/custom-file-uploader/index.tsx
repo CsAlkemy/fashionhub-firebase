@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useController, UseFormReturn } from 'react-hook-form';
 import { ImageUp, Paperclip } from 'lucide-react';
 import { FileInput, FileUploader, FileUploaderContent, FileUploaderItem } from '@components/shared/shadcn-ui/file-upload';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from '../../../../firebaseConfig';
 
 interface CustomFileUploaderProps {
     name: string;
@@ -24,6 +27,7 @@ const FileSvgDraw = () => {
 
 const CustomFileUploader: React.FC<CustomFileUploaderProps> = ({ name, hookForm, maxFiles }) => {
     const [files, setFiles] = useState<File[] | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     const {
         field: { onChange, value },
@@ -32,9 +36,26 @@ const CustomFileUploader: React.FC<CustomFileUploaderProps> = ({ name, hookForm,
         control: hookForm.control,
     });
 
-    const handleFileChange = (newFiles: File[] | null) => {
-        setFiles(newFiles);
-        onChange(newFiles);
+    const handleFileChange = async (newFiles: File[] | null) => {
+        if (!newFiles) return;
+
+        setUploading(true);
+        try {
+            const uploadedFiles = await Promise.all(newFiles.map(file => uploadFile(file)));
+            setFiles(newFiles);
+            onChange(uploadedFiles); // Update the form with the download URLs
+        } catch (error) {
+            console.error('Error uploading files:', error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const uploadFile = async (file: File): Promise<string> => {
+        const fileRef = ref(storage, `uploads/${uuidv4()}-${file.name}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        return downloadURL;
     };
 
     const dropZoneConfig = {
@@ -50,9 +71,10 @@ const CustomFileUploader: React.FC<CustomFileUploaderProps> = ({ name, hookForm,
             dropzoneOptions={dropZoneConfig}
             className="relative bg-background rounded-lg p-2 border border-primary-2">
             <FileInput className="outline-dashed outline-1 outline-white">
-                <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
+                <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full">
                     <FileSvgDraw />
-                    <div className="text-paragraph-xs text-neutral-7 ">Max file limit {maxFiles}</div>
+                    <div className="text-paragraph-xs text-neutral-7">Max file limit {maxFiles}</div>
+                    {uploading && <p className="text-xs text-primary-500">Uploading...</p>}
                 </div>
             </FileInput>
             <FileUploaderContent>

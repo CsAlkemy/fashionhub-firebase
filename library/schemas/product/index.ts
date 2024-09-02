@@ -9,12 +9,9 @@ export const ProductSchema = z.object({
     moreDetails: z.string().optional(),
     productImages: z
         .array(
-            z.object({
-                name: z.string(),
-                size: z.number().max(1024 * 1024 * 4, 'File size should not exceed 4MB'), // 4MB max size
-                type: z.string().refine(value => {
-                    return ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'].includes(value);
-                }, 'Only PNG, JPEG, GIF, or SVG files are allowed'),
+            z.string({
+                required_error: 'Must add one image',
+                invalid_type_error: 'Must be a valid url',
             }),
         )
         .min(1, 'image is required'),
